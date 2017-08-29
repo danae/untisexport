@@ -1,0 +1,16 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed|Raleway");
+
+$font-text: "Raleway", sans-serif;
+$font-heading: "Roboto Condensed", sans-serif;
+
+body {
+  margin: 20px 0; 
+}
+ 
+body, input, select {
+  font-family: $font-text;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-heading; 
+}
