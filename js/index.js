@@ -7,6 +7,27 @@ var departments = {};
 var server = '', school = '', user = '';
 var endpointUrl = '';
 
+// Create an alert
+var createAlert = function(message, $el)
+{
+  $alert = $(document.createElement('div'))
+    .addClass('alert alert-danger alert-dismissible fade show');
+  $el.append($alert);
+  
+  $button = $(document.createElement('button'))
+    .addClass('close')
+    .attr('type','button')
+    .attr('data-dismiss','alert')
+    .html('&times;');
+  $alert.append($button);
+  
+  $text = $(document.createElement('span'))
+    .html('<p><b>Something went terribly wrong!</b> If you bump into an administrator, show him the following error message:</p><hr>' + message);
+  $alert.append($text);
+  
+  return $el;
+};
+
 // Connect to the server and load years and departments
 var connect = function()
 {
@@ -56,7 +77,7 @@ var connect = function()
     },
     error: function(xhr)
     {
-      console.log(xhr.responseJSON);
+      createAlert(JSON.stringify(xhr.responseJSON),$('#alerts'));
     }
   });
   
@@ -91,7 +112,7 @@ var connect = function()
     },
     error: function(xhr)
     {
-      console.log(xhr.responseJSON);
+      createAlert(JSON.stringify(xhr.responseJSON),$('#alerts'));
     }
   });
 };
@@ -129,7 +150,7 @@ var updateClasses = function()
     },
     error: function(xhr)
     {
-      console.log(xhr.responseJSON);
+      createAlert(JSON.stringify(xhr.responseJSON),$('#alerts'));
     }
   });
 };
