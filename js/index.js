@@ -1,46 +1,31 @@
-// Database constructor
-var Database = function()
-{
-  this.years = {};
-  this.departments = {};
-};
-
 // Constants
-Database.endpointUrl = 'https://untisexport.dengsn.com/v1';
+var apiUrl = 'https://untisexport.dengsn.com/v1';
 
 // Variables
-var db = new Database();
+var years = {};
+var departments = {};
+var server = '', school = '', user = '';
+var endpointUrl = '';
 
-// If the document is ready
-$(function()
-{
-  // Check if a server is specified
-  if (typeof Cookies.get('untisexport.server') === 'undefined')
-  {
-    // Open the modal
-    $('#settingsModal').modal('show');
-  }
-  else
-  {
-    // Conenct to the server
-    connect();
-  }
-});
-
-// If the connection is made
+// Connect to the server and load years and departments
 var connect = function()
 {
-  var server = Cookies.get('untisexport.server');
-  var school = Cookies.get('untisexport.school');
-  var user = Cookies.get('untisexport.user');
+  server = Cookies.get('untisexport.server');
+  school = Cookies.get('untisexport.school');
+  user = Cookies.get('untisexport.user');
+  endpointUrl = apiUrl + '/' + server + '/' + school;
   
-  var endpointUrl = Database.endpointUrl + '/' + server + '/' + school;
+  // Clear inputs
+  $('#yearInput').html('');
+  $('#departmentInput').html('');
+  $('#classInput').html('');
   
   // Get years
   $.ajax({
     url: endpointUrl + '/years',
-    username: user,
-    password: '',
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader('Authorization','Basic ' + btoa(user + ':'));
+    },
     success: function(data)
     {
       // Clear year selection
@@ -50,7 +35,9 @@ var connect = function()
       $.each(data,function(index, year)
       {
        // Save in the database
-       db.years[year.id] = year;
+       year.startDate = new Date(year.startDate);
+       year.endDate = new Date(year.endDate);
+       years[year.id] = year;
       
         // Set in the year selection
         var $option = $(document.createElement('option'))
@@ -68,8 +55,9 @@ var connect = function()
   // Get departments
   $.ajax({
     url: endpointUrl + '/departments',
-    username: user,
-    password: '',
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader('Authorization','Basic ' + btoa(user + ':'));
+    },
     success: function(data)
     {
       // Clear department selection
@@ -79,7 +67,7 @@ var connect = function()
       $.each(data,function(index, department)
       {
         // Save in the database
-        db.departments[department.id] = department;
+        departments[department.id] = department;
       
         // Set in the department selection
         var $option = $(document.createElement('option'))
@@ -94,6 +82,105 @@ var connect = function()
     }
   });
 };
+
+// Update the class input
+var updateClasses = function()
+{
+  var yearId = $('#yearInput').val();
+  var departmentId = $('#departmentInput').val();
+  
+  // Get classes
+  $.ajax({
+    url: endpointUrl + '/years/' + yearId + '/classes',
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader('Authorization','Basic ' + btoa(user + ':'));
+    },
+    success: function(data)
+    {
+      // Clear class selection
+      $('#classInput').html('');
+    
+      // Iterate over the data
+      $.each(data,function(index, clazz)
+      {      
+        // If the department doesn't match, then continue
+        if (clazz.department === null || clazz.department.id != departmentId)
+          return;
+        
+        // Set in the class selection
+        var $option = $(document.createElement('option'))
+          .attr('value',clazz.id)
+          .html(clazz.longName);
+        $('#classInput').append($option);
+      });
+    },
+    error: function(xhr)
+    {
+      console.log(xhr.responseJSON);
+    }
+  });
+};
+
+// If the document is ready
+$(function()
+{
+  // Check if a server is specified
+  if (typeof Cookies.get('untisexport.server') === 'undefined')
+    $('#settingsModal').modal('show');
+  else
+    connect();
+});
+
+// If the year input is changed
+$('#yearInput').change(function()
+{
+  // Set the period
+  //$('#startDateInput').val(year.startDate.format('yyyy-mm-dd'));
+  //$('#endDateInput').val(year.endDate.format('yyyy-mm-dd'));
+  
+  // Update the classes
+  updateClasses();
+});
+
+// If the department input is changed
+$('#departmentInput').change(function()
+{
+  // Update the classes
+  updateClasses();
+});
+
+// If the class input is changed
+$('#classInput').change(function(e)
+{
+  // Check if classes are selected
+  var classes = $(e.target).val();
+  if (classes.length === 0)
+    $('#exportButton').prop('disabled',true);
+  else
+    $('#exportButton').prop('disabled',false);
+});
+
+// If the export button is clicked
+$('#exportForm').submit(function(e)
+{
+  e.preventDefault();
+  
+  // Fill the export modal
+  var yearId = $('#yearInput').val()
+  var classId = $('#classInput').val();
+  var link = 'https://' + encodeURIComponent(user) + '@untisexport.dengsn.com/v1/' + server + '/' + school + '/timetable/' + yearId + '/' + classId.join(',') + '.ics';
+  $('#link').val(link);
+  
+  // Show the export modal
+  $('#exportModal').modal('show');
+});
+
+// If the download button is clicked
+$('#downloadLink').click(function()
+{
+  var link = $('#link').val();
+  window.location.href = link;
+});
 
 // If the settings modal is opened
 $('#settingsModal').on('show.bs.modal',function()
