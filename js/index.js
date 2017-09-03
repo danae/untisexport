@@ -45,6 +45,14 @@ var connect = function()
           .html(year.name);
         $('#yearInput').append($option);
       });
+      
+      // Select the year that is currently active
+      var now = new Date();
+      $.each(years,function(index, year)
+      {
+        if (year.startDate.getTime() <= now.getTime() && now.getTime() <= year.endDate.getTime())
+          $('#yearInput').val(year.id);
+      })
     },
     error: function(xhr)
     {
@@ -62,6 +70,11 @@ var connect = function()
     {
       // Clear department selection
       $('#departmentInput').html('');
+      
+      // Sort the departments
+      data.sort(function(a,b) {
+        return a.longName.localeCompare(b.longName);
+      });
     
       // Iterate over the data
       $.each(data,function(index, department)
