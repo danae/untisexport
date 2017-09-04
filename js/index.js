@@ -73,7 +73,10 @@ var connect = function()
       {
         if (year.startDate.getTime() <= now.getTime() && now.getTime() <= year.endDate.getTime())
           $('#yearInput').val(year.id);
-      })
+      });
+      
+      // Update the classes
+      updateClasses();
     },
     error: function(xhr)
     {
@@ -121,7 +124,13 @@ var connect = function()
 var updateClasses = function()
 {
   var yearId = $('#yearInput').val();
+  var year = years[yearId];
+  
   var departmentId = $('#departmentInput').val();
+    
+  // Set the period
+  $('#startDateInput').val(year.startDate.format('yyyy-mm-dd'));
+  $('#endDateInput').val(year.endDate.format('yyyy-mm-dd'));
   
   // Get classes
   $.ajax({
@@ -168,10 +177,6 @@ $(function()
 // If the year input is changed
 $('#yearInput').change(function()
 {
-  // Set the period
-  //$('#startDateInput').val(year.startDate.format('yyyy-mm-dd'));
-  //$('#endDateInput').val(year.endDate.format('yyyy-mm-dd'));
-  
   // Update the classes
   updateClasses();
 });
@@ -200,9 +205,13 @@ $('#exportForm').submit(function(e)
   e.preventDefault();
   
   // Fill the export modal
-  var yearId = $('#yearInput').val()
+  var yearId = $('#yearInput').val();
   var classId = $('#classInput').val();
-  var link = 'https://' + encodeURIComponent(user) + '@untisexport.dengsn.com/v1/' + server + '/' + school + '/timetable/' + yearId + '/' + classId.join(',') + '.ics';
+  var startDate = $('#startDateInput').val();
+  var endDate = $('#endDateInput').val();
+  
+  var link = 'https://' + encodeURIComponent(user) + '@untisexport.dengsn.com/v1/' + server + '/' + school + '/timetable/' + yearId + '/' + classId.join(',') + '.ics?startDate=' + startDate + '&endDate=' + endDate;
+  
   $('#link').val(link);
   
   // Show the export modal
@@ -234,9 +243,9 @@ $('#settingsForm').submit(function(e)
   $('#settingsModal').modal('hide');
   
   // Save the settings
-  Cookies.set('untisexport.server',$('#settingsServerInput').val());
-  Cookies.set('untisexport.school',$('#settingsSchoolInput').val());
-  Cookies.set('untisexport.user',$('#settingsUserInput').val());
+  Cookies.set('untisexport.server',$('#settingsServerInput').val(),{expires: 14});
+  Cookies.set('untisexport.school',$('#settingsSchoolInput').val(),{expires: 14});
+  Cookies.set('untisexport.user',$('#settingsUserInput').val(),{expires: 14});
   
   // Connect to the server
   connect();
