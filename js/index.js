@@ -22,7 +22,7 @@ var createAlert = function(message, $el)
   $alert.append($button);
   
   $text = $(document.createElement('span'))
-    .html('<p><b>Something went terribly wrong!</b> If you bump into an administrator, show him the following error message:</p><hr>' + message);
+    .html('<h2>Something went terribly wrong!</h2><p>If you bump into an administrator, show him the following error message:</p><code>' + message + '</code>');
   $alert.append($text);
   
   return $el;
@@ -41,8 +41,8 @@ var connect = function()
   $('#departmentInput').html('');
   $('#classInput').html('');
   
-  // Get years
-  $.ajax({
+  // Get years and departments
+  $.when($.ajax({
     url: endpointUrl + '/years',
     beforeSend: function(xhr) {
       xhr.setRequestHeader('Authorization','Basic ' + btoa(user + ':'));
@@ -82,10 +82,7 @@ var connect = function()
     {
       createAlert(JSON.stringify(xhr.responseJSON),$('#alerts'));
     }
-  });
-  
-  // Get departments
-  $.ajax({
+  }),$.ajax({
     url: endpointUrl + '/departments',
     beforeSend: function(xhr) {
       xhr.setRequestHeader('Authorization','Basic ' + btoa(user + ':'));
@@ -117,6 +114,9 @@ var connect = function()
     {
       createAlert(JSON.stringify(xhr.responseJSON),$('#alerts'));
     }
+  })).done(function()
+  {
+    $(document).trigger('untisexport.connected');
   });
 };
 
@@ -168,10 +168,38 @@ var updateClasses = function()
 $(function()
 {
   // Check if a server is specified
-  if (typeof Cookies.get('untisexport.server') === 'undefined')
-    $('#settingsModal').modal('show');
-  else
-    connect();
+  if (typeof Cookies.get('untisexport.server') !== 'undefined')
+  {
+    // Set the settings in the form
+    $('#settingsServerInput').val(Cookies.get('untisexport.server'));
+    $('#settingsSchoolInput').val(Cookies.get('untisexport.school'));
+    $('#settingsUserInput').val(Cookies.get('untisexport.user'));
+    //connect();
+  }
+});
+
+// If connected
+$(document).on('untisexport.connected',function()
+{
+  // Show the export tab
+  $('#export').tab('show');
+});
+
+// If the settings are saved
+$('#settingsForm').submit(function(e)
+{
+  e.preventDefault();
+  
+  // Save the settings
+  Cookies.set('untisexport.server',$('#settingsServerInput').val(),{expires: 14});
+  Cookies.set('untisexport.school',$('#settingsSchoolInput').val(),{expires: 14});
+  Cookies.set('untisexport.user',$('#settingsUserInput').val(),{expires: 14});
+  
+  // Connect to the server
+  connect();
+  
+  // Go to the export screen
+  
 });
 
 // If the year input is changed
@@ -223,30 +251,4 @@ $('#downloadLink').click(function()
 {
   var link = $('#link').val();
   window.location.href = link;
-});
-
-// If the settings modal is opened
-$('#settingsModal').on('show.bs.modal',function()
-{
-  // Set the settings in the modal
-  $('#settingsServerInput').val(Cookies.get('untisexport.server'));
-  $('#settingsSchoolInput').val(Cookies.get('untisexport.school'));
-  $('#settingsUserInput').val(Cookies.get('untisexport.user'));
-});
-
-// If the settings are saved
-$('#settingsForm').submit(function(e)
-{
-  e.preventDefault();
-  
-  // Close the modal
-  $('#settingsModal').modal('hide');
-  
-  // Save the settings
-  Cookies.set('untisexport.server',$('#settingsServerInput').val(),{expires: 14});
-  Cookies.set('untisexport.school',$('#settingsSchoolInput').val(),{expires: 14});
-  Cookies.set('untisexport.user',$('#settingsUserInput').val(),{expires: 14});
-  
-  // Connect to the server
-  connect();
 });

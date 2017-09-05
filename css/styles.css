@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed|Raleway");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:400|Raleway:300,700");
 body {
   margin: 20px 0; }
 
@@ -7,8 +7,5 @@ body, input, select {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: "Roboto Condensed", sans-serif; }
-
-button.btn {
-  cursor: pointer; }
 
 /*# sourceMappingURL=styles.css.map */
