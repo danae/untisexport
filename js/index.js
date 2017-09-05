@@ -22,18 +22,25 @@ var createAlert = function(message, $el)
   $alert.append($button);
   
   $text = $(document.createElement('span'))
-    .html('<h2>Something went terribly wrong!</h2><p>If you bump into an administrator, show him the following error message:</p><code>' + message + '</code>');
+    .html('<h2>Something went terribly wrong!</h2><p>If you bump into an administrator, show him the following error message:</p><p class="mb-0">' + message + '</p>');
   $alert.append($text);
   
   return $el;
 };
 
+// Reset the connect form
+var resetConnectForm = function()
+{
+  $('#connectButton').prop('disabled',false);
+  $('#connectIcon').removeClass('fa-spinner fa-spin').addClass('fa-folder-open');
+}
+
 // Connect to the server and load years and departments
 var connect = function()
 {
-  server = Cookies.get('untisexport.server');
-  school = Cookies.get('untisexport.school');
-  user = Cookies.get('untisexport.user');
+  server = $('#connectServerInput').val();
+  school = $('#connectSchoolInput').val();
+  user = $('#connectUserInput').val();
   endpointUrl = apiUrl + '/' + server + '/' + school;
   
   // Clear inputs
@@ -74,13 +81,11 @@ var connect = function()
         if (year.startDate.getTime() <= now.getTime() && now.getTime() <= year.endDate.getTime())
           $('#yearInput').val(year.id);
       });
-      
-      // Update the classes
-      updateClasses();
     },
     error: function(xhr)
     {
-      createAlert(JSON.stringify(xhr.responseJSON),$('#alerts'));
+      createAlert(xhr.responseJSON.error,$('#alerts'));
+      resetConnectForm();
     }
   }),$.ajax({
     url: endpointUrl + '/departments',
@@ -112,11 +117,16 @@ var connect = function()
     },
     error: function(xhr)
     {
-      createAlert(JSON.stringify(xhr.responseJSON),$('#alerts'));
+      createAlert(xhr.responseJSON.error,$('#alerts'));
+      resetConnectForm();
     }
   })).done(function()
   {
-    $(document).trigger('untisexport.connected');
+    // Update the classes
+    updateClasses();
+  
+    // Show the export tab
+    $('#exportTab').tab('show');
   });
 };
 
@@ -159,7 +169,7 @@ var updateClasses = function()
     },
     error: function(xhr)
     {
-      createAlert(JSON.stringify(xhr.responseJSON),$('#alerts'));
+      createAlert(xhr.responseJSON.error,$('#alerts'));
     }
   });
 };
@@ -167,39 +177,45 @@ var updateClasses = function()
 // If the document is ready
 $(function()
 {
-  // Check if a server is specified
+  resetConnectForm();
+  
+  // Set the inputs in the connect form
   if (typeof Cookies.get('untisexport.server') !== 'undefined')
   {
-    // Set the settings in the form
-    $('#settingsServerInput').val(Cookies.get('untisexport.server'));
-    $('#settingsSchoolInput').val(Cookies.get('untisexport.school'));
-    $('#settingsUserInput').val(Cookies.get('untisexport.user'));
-    //connect();
+    $('#connectServerInput').val(Cookies.get('untisexport.server'));
+    $('#connectSchoolInput').val(Cookies.get('untisexport.school'));
+    $('#connectUserInput').val(Cookies.get('untisexport.user'));
   }
 });
 
-// If connected
-$(document).on('untisexport.connected',function()
-{
-  // Show the export tab
-  $('#export').tab('show');
-});
-
-// If the settings are saved
-$('#settingsForm').submit(function(e)
+// If the connect form is submitted
+$('#connectForm').submit(function(e)
 {
   e.preventDefault();
   
-  // Save the settings
-  Cookies.set('untisexport.server',$('#settingsServerInput').val(),{expires: 14});
-  Cookies.set('untisexport.school',$('#settingsSchoolInput').val(),{expires: 14});
-  Cookies.set('untisexport.user',$('#settingsUserInput').val(),{expires: 14});
-  
-  // Connect to the server
-  connect();
-  
-  // Go to the export screen
-  
+  // Validate the inputs
+  if (!e.target.checkValidity())
+  {
+    // Stop the event
+    e.stopPropagation();  
+      
+    // Add validation class to the form
+    $(e.target).addClass('was-validated');
+  }
+  else
+  {
+    // Save settings
+    Cookies.set('untisexport.server',$('#connectServerInput').val(),{expires: 14});
+    Cookies.set('untisexport.school',$('#connectSchoolInput').val(),{expires: 14});
+    Cookies.set('untisexport.user',$('#connectUserInput').val(),{expires: 14});
+    
+    // Set the icon
+    $('#connectButton').prop('disabled',true);
+    $('#connectIcon').removeClass('fa-plug').addClass('fa-spinner fa-spin')
+        
+    // Connect to the server
+    connect();
+  }
 });
 
 // If the year input is changed
@@ -227,7 +243,15 @@ $('#classInput').change(function(e)
     $('#exportButton').prop('disabled',false);
 });
 
-// If the export button is clicked
+// If the settings button is clicked
+$('#settingsButton').click(function()
+{
+  // Show the settings tab
+  resetConnectForm();
+  $('#connectTab').tab('show');
+});
+
+// If the download button is clicked
 $('#exportForm').submit(function(e)
 {
   e.preventDefault();
@@ -239,16 +263,5 @@ $('#exportForm').submit(function(e)
   var endDate = $('#endDateInput').val();
   
   var link = 'https://' + encodeURIComponent(user) + '@untisexport.dengsn.com/v1/' + server + '/' + school + '/timetable/' + yearId + '/' + classId.join(',') + '.ics?startDate=' + startDate + '&endDate=' + endDate;
-  
-  $('#link').val(link);
-  
-  // Show the export modal
-  $('#exportModal').modal('show');
-});
-
-// If the download button is clicked
-$('#downloadLink').click(function()
-{
-  var link = $('#link').val();
   window.location.href = link;
 });

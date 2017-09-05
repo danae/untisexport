@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Export your WebUntis schedule for use in Outlook, iCalendar and Google Calendar in four simple clicks.">
+    <meta name="description" content="Download your WebUntis schedule for use in Outlook, iCalendar and Google Calendar in two simple steps.">
     <title>Untis Export</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
@@ -37,52 +37,55 @@
           <!-- Header -->
           <h1 class="text-muted">Untis Export</h1>
           <p class="lead">
-            Export your WebUntis schedule for use in Outlook, iCalendar and Google Calendar in four simple clicks.
+            Download your WebUntis schedule for use in Outlook, iCalendar and Google Calendar in two simple steps.
           </p>
             
           <!-- Alert space -->
           <div id="alerts"></div>
           
           <!-- Content -->
-          <div class="tab-content" id="tabContent">
+          <a href="#connect" id="connectTab" data-toggle="tab"></a>
+          <a href="#export" id="exportTab" data-toggle="tab"></a>
+          <div id="content" class="tab-content">
             
-            <!-- Connection form -->
-            <div class="tab-pane fade show active" id="connect">
-              <form id="settingsForm">
-                <div class="card text-dark">
+            <!-- Connect form -->
+            <div class="tab-pane fade show active" id="connect" data-parent="#content">
+              <form id="connectForm" novalidate>
+                <div class="card text-dark mb-3">
                   <div class="card-body">
-                    <h2>Connect to WebUntis</h2>
+                    <h2 class="card-title">Connect to WebUntis</h2>
                     <p>Enter the credentials to connect to your WebUntis-service.</p>
                   
                     <div id="credentials">
                       <div class="form-group">
-                        <label for="settingsServerInput"><i class="fa fa-fw fa-globe"></i> Server</label>
-                        <input type="text" class="form-control" id="settingsServerInput">
+                        <label for="connectServerInput"><i class="fa fa-fw fa-globe"></i> Server</label>
+                        <input type="text" class="form-control" id="connectServerInput" required>
                         <small class="form-text text-muted">This is the hostname part of the WebUntis URL (e.g. mese.webuntis.com)</small>
                       </div>
                       <div class="form-group">
-                        <label for="settingsSchoolInput"><i class="fa fa-fw fa-graduation-cap"></i> School</label>
-                        <input type="text" class="form-control" id="settingsSchoolInput">
+                        <label for="connectSchoolInput"><i class="fa fa-fw fa-graduation-cap"></i> School</label>
+                        <input type="text" class="form-control" id="connectSchoolInput" required>
                       </div>
                       <div class="form-group">
-                        <label for="settingsUserInput"><i class="fa fa-fw fa-user"></i> User name</label>
-                        <input type="text" class="form-control" id="settingsUserInput">
+                        <label for="connectUserInput"><i class="fa fa-fw fa-user"></i> User name</label>
+                        <input type="text" class="form-control" id="connectUserInput" required>
                       </div>
                     </div>
                   </div>
                   <div class="card-footer bg-transparent text-right">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-fw fa-plug"></i> Connect</button>
+                    <button type="submit" class="btn btn-primary" id="connectButton"><i class="fa fa-fw fa-folder-open" id="connectIcon"></i> Connect</button>
                   </div>
                 </div>
               </form>
-            </div>
+              </div>
           
             <!-- Export form -->
-            <div class="tab-pane fade" id="export">
+            <div class="tab-pane fade" id="export" data-parent="#content">
               <form id="exportForm">
-                <div class="card text-dark">
+                <div class="card text-dark mb-3">
                   <div class="card-body">
-                    <h2>Export your schedule</h2>
+                    <h2>Download your schedule</h2>
+                    <p>Select the classes of which you want to download the schedule in an iCalendar file.
                     
                     <div class="form-group">
                       <label for="yearInput"><i class="fa fa-fw fa-calendar-o"></i> School year</label>
@@ -110,26 +113,26 @@
                     </div>
                   </div>
                   <div class="card-footer bg-transparent text-right">
-                    <button class="btn btn-light" id="settingsButton" data-toggle="tab" data-target="#connect"><i class="fa fa-fw fa-cog"></i> Connection settings</button>
-                    <button type="submit" class="btn btn-primary" id="exportButton" disabled><i class="fa fa-fw fa-calendar"></i> Export</button>
+                    <button type="button" class="btn btn-light" id="settingsButton">Back</button>
+                    <button type="submit" class="btn btn-primary" id="exportButton" disabled><i class="fa fa-fw fa-download"></i> Download</button>
                   </div>
                 </div>
               </form>
             </div>
-            
           </div>
           
           <!-- Footer -->
-          <p class="text-center my-3" style="font-size: small;">
-            <b>created by <a href="https://github.com/dengsn">dengsn</a> &middot; icons by <a href="https://fontawesome.io">Font Awesome</a><br></b>
-            Untis Export uses cookies to save session data and connection settings. By using the application you agree that cookies will be stored on your device.
-          </p>
+          <footer class="text-center" style="font-size: small;">
+            <p>
+              <b>created by <a href="https://github.com/dengsn">dengsn</a> &middot; icons by <a href="https://fontawesome.io">Font Awesome</a><br></b>
+              Untis Export uses cookies to save session data and connection settings. By using the application you agree that cookies will be stored on your device.
+            </p>
           
-          <!-- Donate button -->
-          <p class="text-center my-3">
-            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VLR85FVPEQGZL" class="btn btn-sm btn-primary"><i class="fa fa-fw fa-paypal"></i> Donate</a><br>
-          </p>
-          
+            <!-- Donate button -->
+            <p>
+              <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VLR85FVPEQGZL" class="btn btn-sm btn-primary"><i class="fa fa-fw fa-paypal"></i> Donate</a><br>
+            </p>
+          </footer>
         </div>
       </div>
     </div>
