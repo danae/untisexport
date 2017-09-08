@@ -50,7 +50,7 @@ var connect = function()
   
   // Get years and departments
   $.when($.ajax({
-    url: endpointUrl + '/years',
+    url: endpointUrl + '/years/',
     beforeSend: function(xhr) {
       xhr.setRequestHeader('Authorization','Basic ' + btoa(user + ':'));
     },
@@ -88,7 +88,7 @@ var connect = function()
       resetConnectForm();
     }
   }),$.ajax({
-    url: endpointUrl + '/departments',
+    url: endpointUrl + '/departments/',
     beforeSend: function(xhr) {
       xhr.setRequestHeader('Authorization','Basic ' + btoa(user + ':'));
     },
@@ -144,7 +144,7 @@ var updateClasses = function()
   
   // Get classes
   $.ajax({
-    url: endpointUrl + '/years/' + yearId + '/classes',
+    url: endpointUrl + '/classes/' + yearId + '/',
     beforeSend: function(xhr) {
       xhr.setRequestHeader('Authorization','Basic ' + btoa(user + ':'));
     },
@@ -262,6 +262,6 @@ $('#exportForm').submit(function(e)
   var startDate = $('#startDateInput').val();
   var endDate = $('#endDateInput').val();
   
-  var link = 'https://' + encodeURIComponent(user) + '@untisexport.dengsn.com/v1/' + server + '/' + school + '/timetable/' + yearId + '/' + classId.join(',') + '.ics?startDate=' + startDate + '&endDate=' + endDate;
+  var link = 'https://' + encodeURIComponent(user) + '@untisexport.dengsn.com/v1/' + server + '/' + school + '/classes/' + yearId + '/' + classId.join(',') + '/calendar.ics?startDate=' + startDate + '&endDate=' + endDate;
   window.location.href = link;
 });
