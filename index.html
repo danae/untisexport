@@ -5,145 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Download your WebUntis schedule for use in Outlook, iCalendar and Google Calendar in two simple steps.">
     <title>Untis Export</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
     <link rel="stylesheet" href="css/styles.css">
   </head>
-  
-  <body class="bg-dark">
-    <!-- Export modal -->
-    <div class="modal fade" id="exportModal">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <form>
-            <div class="modal-body">
+
+  <body class="container">            
+    <!-- Header -->
+    <h2>Untis Export</h2>
+    <p class="lead">
+      Download your WebUntis schedule for use in Outlook, iCalendar and Google Calendar in two simple steps.
+    </p>
+
+    <!-- Alert space -->
+    <div id="alerts"></div>
+
+    <!-- Content -->
+    <div class="nav">
+      <a href="#connect" id="connectTab" data-toggle="tab"></a>
+      <a href="#export" id="exportTab" data-toggle="tab"></a>
+    </div>
+    <div id="content" class="tab-content">
+      <!-- Connect form -->
+      <div class="tab-pane fade show active" id="connect" data-parent="#content">
+        <form id="connectForm" novalidate>
+          <div class="card text-dark mb-3">
+            <div class="card-body">
+              <h4 class="card-title">Connect to WebUntis</h4>
+              <p>Enter the credentials to connect to your WebUntis-service.</p>
+
+              <div id="credentials">
+                <div class="form-group">
+                  <label for="connectServerInput"><i class="fas fa-fw fa-globe"></i> Server</label>
+                  <input type="text" class="form-control" id="connectServerInput" required>
+                  <small class="form-text text-muted">This is the hostname part of the WebUntis URL (e.g. mese.webuntis.com)</small>
+                </div>
+                <div class="form-group">
+                  <label for="connectSchoolInput"><i class="fas fa-fw fa-building"></i> School</label>
+                  <input type="text" class="form-control" id="connectSchoolInput" required>
+                </div>
+                <div class="form-group">
+                  <label for="connectUserInput"><i class="fas fa-fw fa-user"></i> User name</label>
+                  <input type="text" class="form-control" id="connectUserInput" required>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent text-right">
+              <button type="submit" class="btn btn-primary" id="connectButton"><i class="fas fa-fw fa-plug" id="connectIcon"></i> Connect</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Export form -->
+      <div class="tab-pane fade" id="export" data-parent="#content">
+        <form id="exportForm">
+          <div class="card text-dark mb-3">
+            <div class="card-body">
+              <h4 class="card-title">Download your schedule</h4>
+              <p>Select the schedules you want to download in an iCalendar file.
+
               <div class="form-group">
-                <label for="link"><i class="fa fa-fw fa-calendar"></i> Link to the calendar:</label>
-                <input readonly type="text" class="form-control" id="link">
+                <label for="yearInput"><i class="fas fa-fw fa-calendar-alt"></i> School year</label>
+                <select class="form-control" id="yearInput"></select>
               </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-              <button type="button" class="btn btn-primary" id="downloadLink"><i class="fa fa-fw fa-download"></i> Download</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    
-    <div class="container text-light">
-      <div class="row justify-content-center">
-        <div class="col-lg-6">          
-          
-          <!-- Header -->
-          <h1 class="text-muted">Untis Export</h1>
-          <p class="lead">
-            Download your WebUntis schedule for use in Outlook, iCalendar and Google Calendar in two simple steps.
-          </p>
-            
-          <!-- Alert space -->
-          <div id="alerts"></div>
-          
-          <!-- Content -->
-          <div class="nav">
-            <a href="#connect" id="connectTab" data-toggle="tab"></a>
-            <a href="#export" id="exportTab" data-toggle="tab"></a>
-          </div>
-          <div id="content" class="tab-content">
-            
-            <!-- Connect form -->
-            <div class="tab-pane fade show active" id="connect" data-parent="#content">
-              <form id="connectForm" novalidate>
-                <div class="card text-dark mb-3">
-                  <div class="card-body">
-                    <h2 class="card-title">Connect to WebUntis</h2>
-                    <p>Enter the credentials to connect to your WebUntis-service.</p>
-                  
-                    <div id="credentials">
-                      <div class="form-group">
-                        <label for="connectServerInput"><i class="fa fa-fw fa-globe"></i> Server</label>
-                        <input type="text" class="form-control" id="connectServerInput" required>
-                        <small class="form-text text-muted">This is the hostname part of the WebUntis URL (e.g. mese.webuntis.com)</small>
-                      </div>
-                      <div class="form-group">
-                        <label for="connectSchoolInput"><i class="fa fa-fw fa-graduation-cap"></i> School</label>
-                        <input type="text" class="form-control" id="connectSchoolInput" required>
-                      </div>
-                      <div class="form-group">
-                        <label for="connectUserInput"><i class="fa fa-fw fa-user"></i> User name</label>
-                        <input type="text" class="form-control" id="connectUserInput" required>
-                      </div>
-                    </div>
+              <div class="form-group">
+                <label for="departmentInput"><i class="fas fa-fw fa-graduation-cap"></i> Department</label>
+                <select class="form-control" id="departmentInput"></select>
+              </div>
+              <div class="form-group">
+                <label for="classInput"><i class="fas fa-fw fa-users"></i> Classes</label>
+                <select multiple class="form-control" id="classInput"></select>
+                <small class="form-text text-muted">Use CTRL-click or SHIFT-click to select multiple classes at once</small>
+              </div>
+              <div class="form-group">
+                <label><i class="far fa-fw fa-clock"></i> Period to export</label>
+                <div class="form-row">
+                  <div class="col">
+                    <input type="date" class="form-control" id="startDateInput">
                   </div>
-                  <div class="card-footer bg-transparent text-right">
-                    <button type="submit" class="btn btn-primary" id="connectButton"><i class="fa fa-fw fa-folder-open" id="connectIcon"></i> Connect</button>
+                  <div class="col">
+                    <input type="date" class="form-control" id="endDateInput">
                   </div>
                 </div>
-              </form>
               </div>
-          
-            <!-- Export form -->
-            <div class="tab-pane fade" id="export" data-parent="#content">
-              <form id="exportForm">
-                <div class="card text-dark mb-3">
-                  <div class="card-body">
-                    <h2>Download your schedule</h2>
-                    <p>Select the classes of which you want to download the schedule in an iCalendar file.
-                    
-                    <div class="form-group">
-                      <label for="yearInput"><i class="fa fa-fw fa-calendar-o"></i> School year</label>
-                      <select class="form-control" id="yearInput"></select>
-                    </div>
-                    <div class="form-group">
-                      <label for="departmentInput"><i class="fa fa-fw fa-graduation-cap"></i> Department</label>
-                      <select class="form-control" id="departmentInput"></select>
-                    </div>
-                    <div class="form-group">
-                      <label for="classInput"><i class="fa fa-fw fa-users"></i> Classes</label>
-                      <select multiple class="form-control" id="classInput"></select>
-                      <small class="form-text text-muted">Use CTRL-click or SHIFT-click to select multiple classes at once</small>
-                    </div>
-                    <div class="form-group">
-                      <label><i class="fa fa-fw fa-clock-o"></i> Period to export</label>
-                      <div class="form-row">
-                        <div class="col">
-                          <input type="date" class="form-control" id="startDateInput">
-                        </div>
-                        <div class="col">
-                          <input type="date" class="form-control" id="endDateInput">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-footer bg-transparent text-right">
-                    <button type="button" class="btn btn-light" id="settingsButton">Back</button>
-                    <button type="submit" class="btn btn-primary" id="exportButton" disabled><i class="fa fa-fw fa-download"></i> Download</button>
-                  </div>
-                </div>
-              </form>
+              <p class="mb-0">Please note that generating the iCalendar file can take a little while.</p>
+            </div>
+            <div class="card-footer bg-transparent text-right">
+              <button type="button" class="btn btn-light" id="settingsButton">Back</button>
+              <button type="submit" class="btn btn-primary" id="exportButton" disabled><i class="fas fa-fw fa-download"></i> Download</button>
             </div>
           </div>
-          
-          <!-- Footer -->
-          <footer class="text-center" style="font-size: small;">
-            <p>
-              <b>created by <a href="https://github.com/dengsn">dengsn</a> &middot; icons by <a href="https://fontawesome.io">Font Awesome</a><br></b>
-              Untis Export uses cookies to save session data and connection settings. By using the application you agree that cookies will be stored on your device.
-            </p>
-          
-            <!-- Donate button -->
-            <p>
-              <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VLR85FVPEQGZL" class="btn btn-sm btn-primary"><i class="fa fa-fw fa-paypal"></i> Donate</a><br>
-            </p>
-          </footer>
-        </div>
+        </form>
       </div>
+
+      <!-- Footer -->
+      <footer class="text-center" style="font-size: small;">
+        <p>
+          <b>Untis Export was created by <a href="https://dennisdekker.art/">Dennis Dekker</a> &middot; Icons by <a href="https://fontawesome.io">Font Awesome</a><br></b>
+          Untis Export uses cookies to save session data and connection settings. By using the application you agree that cookies will be stored on your device.
+        </p>
+
+        <!-- Donate button -->
+        <p>
+          <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VLR85FVPEQGZL" class="btn btn-sm btn-primary"><i class="fab fa-fw fa-paypal"></i> Donate</a><br>
+        </p>
+      </footer>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"></script>
     
-    <script src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script>
-    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
-    <script src="//use.fontawesome.com/8e5420d111.js"></script>
     <script src="js/js.cookie-2.1.4.min.js"></script>
     <script src="js/date.format.js"></script>
     <script src="js/index.js"></script>

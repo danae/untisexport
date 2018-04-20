@@ -1,16 +1,22 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:400|Raleway:300,700");
+@import url('https://fonts.googleapis.com/css?family=Lora|Lato:300,700');
 
-$font-text: "Raleway", sans-serif;
-$font-heading: "Roboto Condensed", sans-serif;
+$font-text: "Lato", sans-serif;
+$font-heading: "Lora", serif;
 
+// Set the body margin
 body {
-  margin: 20px 0; 
+  margin: 20px 0px; 
 }
  
-body, input, select {
+// Set the fonts
+body, input, select, textarea {
   font-family: $font-text;
 }
-
 h1, h2, h3, h4, h5, h6 {
   font-family: $font-heading; 
+}
+
+// Set the width of the container
+.container {
+  max-width: 600px;
 }
