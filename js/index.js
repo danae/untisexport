@@ -1,5 +1,5 @@
 // Constants
-var apiUrl = 'https://untisexport.dengsn.com/v1';
+var apiUrl = 'https://api.dengsn.com/webuntis/v1';
 
 // Variables
 var years = {};
