@@ -1,5 +1,5 @@
 // Constants
-var apiUrl = 'https://api.dengsn.com/webuntis/v1';
+var apiUrl = 'https://api.dengsn.com/webuntis/v2';
 
 // Variables
 var years = {};
@@ -144,7 +144,7 @@ var updateClasses = function()
   
   // Get classes
   $.ajax({
-    url: endpointUrl + '/classes/' + yearId + '/',
+    url: endpointUrl + '/years/' + yearId + '/classes/',
     beforeSend: function(xhr) {
       xhr.setRequestHeader('Authorization','Basic ' + btoa(user + ':'));
     },
@@ -262,6 +262,6 @@ $('#exportForm').submit(function(e)
   var startDate = $('#startDateInput').val();
   var endDate = $('#endDateInput').val();
   
-  var link = 'https://' + encodeURIComponent(user) + '@untisexport.dengsn.com/v1/' + server + '/' + school + '/classes/' + yearId + '/' + classId.join(',') + '/calendar.ics?startDate=' + startDate + '&endDate=' + endDate;
+  var link = 'https://' + encodeURIComponent(user) + '@api.dengsn.com/webuntis/v2/' + server + '/' + school + '/years/' + yearId + '/classes/' + classId.join(',') + '/calendar.ics?startDate=' + startDate + '&endDate=' + endDate;
   window.location.href = link;
 });
